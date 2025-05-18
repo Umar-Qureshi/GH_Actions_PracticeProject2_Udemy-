@@ -29,6 +29,8 @@ jobs:
       # Build the website after making sure dist exists
       - name: Build website
         run: npm run build
+      - name: Verify artifact contents
+        run: ls -al dist
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         # Store the build artifacts in the dist directory and package.json
