@@ -31,12 +31,10 @@ jobs:
         run: npm run build
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
+        # Store the build artifacts in the dist directory and package.json
         with:
-          #Store the build artifacts in the dist directory and package.json
           name: dist-files
-          path: |
-            dist
-            package.json
+          path: dist
   deploy:
     needs: build
     runs-on: ubuntu-latest
