@@ -24,8 +24,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
       # Ensure dist directory exists before building
-      - name: Create dist directory
-        run: mkdir -p dist
+      #- name: Create dist directory
+      #  run: mkdir -p dist
       # Build the website after making sure dist exists
       - name: Build website
         run: npm run build
@@ -33,10 +33,12 @@ jobs:
         run: ls -al dist
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
-        # Store the build artifacts in the dist directory and package.json
+        # Store the build artifacts in the dist directory and package.jsonn
         with:
           name: dist-files
-          path: dist
+          path: |
+            dist
+            package.json
   deploy:
     needs: build
     runs-on: ubuntu-latest
