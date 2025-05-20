@@ -9,6 +9,15 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v4
+      - name: Cache dependencies
+        # the point of caching is to speed up the workflow as this step can be reused in other jobs
+        # this step must happen before the install step
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          # the path to cache is the node_modules directory
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+          # Cache key is based on package-lock.json hash; if it changes, cache is invalidated and recreated
       - name: Install dependencies
         run: npm ci
       - name: Lint code
