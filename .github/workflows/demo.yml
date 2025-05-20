@@ -18,6 +18,9 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      # this script-file output is used in the deploy job
+      script-file: ${{ steps.publish.outputs.script-file }}
     steps:
       - name: Get code
         uses: actions/checkout@v4
@@ -25,6 +28,12 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
+      - name: Publish JS filename
+        # The id of the step is used to reference the output in the next job
+        id: publish
+        # the following run command obtains all .js files in the dist/assets directory
+        # and then echoes them to the output variable script-file
+        run: find dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
       - name: Verify artifact contents
         run: ls -al dist
       - name: Upload artifacts
@@ -42,5 +51,7 @@ jobs:
           name: dist-files
       - name: Output artifact contents
         run: ls
+      - name: Output filename
+        run: echo "${{ needs.build.outputs.script-file }}"
       - name: Deploy
         run: echo "Deploying..."
