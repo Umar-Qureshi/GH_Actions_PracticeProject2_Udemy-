@@ -14,10 +14,13 @@ jobs:
         # this step must happen before the install step
         uses: actions/cache@v4
         with:
-          path: ~/.npm
           # the path to cache is the node_modules directory
+          path: ~/.npm
+          # the key is a hash of the package-lock.json file
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
-          # Cache key is based on package-lock.json hash; if it changes, cache is invalidated and recreated
+          # if the hash/key matches in any step/job then the saved cache is used
+          # The hash/key only changes if package-lock.json changes, so if new dependencies are added or updated
+              # then the cache will be invalidated and a new cache will be created
       - name: Install dependencies
         run: npm ci
       - name: Lint code
@@ -33,6 +36,12 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v4
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+          # the cache key is the same as in the test job, so the cache will be reused if package-lock.json is unchanged, saving time
       - name: Install dependencies
         run: npm ci
       - name: Build website
