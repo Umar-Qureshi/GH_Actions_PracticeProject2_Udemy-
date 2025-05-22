@@ -55,6 +55,7 @@ jobs:
       - name: Verify artifact contents
         run: ls -al dist
       - name: Upload artifacts
+        # this step uploads the dist directory as an artifact
         uses: actions/upload-artifact@v4
         with:
           name: dist-files
@@ -64,6 +65,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Build Artifacts
+        # this step downloads the artifact created in the build job
         uses: actions/download-artifact@v4
         with:
           name: dist-files
